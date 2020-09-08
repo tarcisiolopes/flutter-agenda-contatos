@@ -10,24 +10,39 @@ class _HomePageState extends State<HomePage> {
 
   ContactHelper helper = ContactHelper();
 
+  List<Contact> contacts = List();
+
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-
-    Contact c = Contact();
-    c.nome = "Tarcisio";
-    c.sobrenome = "Lopes";
-    c.email = "tarcisiolopesgomes@gmail.com";
-    c.telefone = "062999158371";
-    c.img = "imgtest";
-
-    helper.saveContact(c);
     helper.getAllContacts().then((list){
-      print(list);
+      setState(() {
+        contacts = list;
+      });
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Contatos"),
+        backgroundColor: Colors.blue,centerTitle: true,
+      ),
+      backgroundColor: Colors.black,
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
+      body: ListView.builder(
+          padding: EdgeInsets.all(10.0),
+          itemCount: contacts.length,
+          itemBuilder: (context, index){
+
+          }
+      ),
+    );
   }
 }
