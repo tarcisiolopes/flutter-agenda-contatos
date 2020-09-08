@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -11,9 +12,7 @@ final String imgColumn = "imgColumn";
 
 class ContactHelper {
   static final ContactHelper _instance = ContactHelper.internal();
-
   factory ContactHelper() => _instance;
-
   ContactHelper.internal();
 
   Database _db;
@@ -31,7 +30,7 @@ class ContactHelper {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, "contacts.db");
 
-    return openDatabase(path, version: 1,
+    return await openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {
           await db.execute(
               "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nomeColumn TEXT, $sobrenomeColumn TEXT, $emailColumn TEXT, $telefoneColumn TEXT, $imgColumn TEXT)");
@@ -64,7 +63,7 @@ class ContactHelper {
   Future<int> deleteContact(int id) async {
     Database dbContact = await db;
     return await dbContact.delete(
-        contactTable, where: "$idColumn = ?" whereArgs: [id]);
+        contactTable, where: "$idColumn = ?", whereArgs: [id]);
   }
 
   Future<int> updateContact(Contact contact) async {
@@ -76,10 +75,10 @@ class ContactHelper {
 
   Future<List> getAllContacts() async {
     Database dbContact = await db;
-    List listMap = await dbContact.rawQuery("SELECT * FROM $contactTable")
+    List listMap = await dbContact.rawQuery("SELECT * FROM $contactTable");
     List<Contact> listContact = List();
     for(Map m in listMap) {
-      listMap.add(Contact.fromMap(m));
+      listContact.add(Contact.fromMap(m));
     }
     return listContact;
   }
@@ -102,6 +101,8 @@ class Contact {
   String email;
   String telefone;
   String img;
+
+  Contact();
 
   Contact.fromMap(Map map) {
     id = map[idColumn];
