@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:agenda/helper/contact_helper.dart';
 import 'package:agenda/ui/contact_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -113,10 +114,12 @@ class _HomePageState extends State<HomePage> {
                       child: FlatButton(
                         child: Text(
                           "Ligar",
-                          style: TextStyle(
-                              color: Colors.green, fontSize: 20.0),
+                          style: TextStyle(color: Colors.green, fontSize: 20.0),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          launch("tel: ${contacts[index].telefone}");
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
                     Padding(
@@ -138,8 +141,7 @@ class _HomePageState extends State<HomePage> {
                       child: FlatButton(
                         child: Text(
                           "Excluir",
-                          style: TextStyle(
-                              color: Colors.red, fontSize: 20.0),
+                          style: TextStyle(color: Colors.red, fontSize: 20.0),
                         ),
                         onPressed: () {
                           helper.deleteContact(contacts[index].id);
