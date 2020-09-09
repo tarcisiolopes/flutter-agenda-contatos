@@ -75,18 +75,13 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                           fontSize: 22.0, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                        contacts[index].sobrenome ?? "",
-                        style: TextStyle(fontSize: 18.0)
-                    ),
-                    Text(
-                        contacts[index].telefone ?? "",
-                        style: TextStyle(fontSize: 18.0)
-                    ),
+                    Text(contacts[index].sobrenome ?? "",
+                        style: TextStyle(fontSize: 18.0)),
+                    Text(contacts[index].telefone ?? "",
+                        style: TextStyle(fontSize: 18.0)),
                     Text(
                       contacts[index].email ?? "",
-                      style: TextStyle(
-                          fontSize: 16.0),
+                      style: TextStyle(fontSize: 16.0),
                     ),
                   ],
                 ),
@@ -95,18 +90,81 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      onTap: (){
-        _showContactPage(contact: contacts[index]);
+      onTap: () {
+        _showOptions(context, index);
       },
     );
   }
 
+  void _showOptions(BuildContext context, int index) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            onClosing: () {},
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Ligar",
+                          style: TextStyle(
+                              color: Colors.green, fontSize: 20.0),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Editar",
+                          style: TextStyle(
+                              color: Colors.blueAccent, fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _showContactPage(contact: contacts[index]);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Excluir",
+                          style: TextStyle(
+                              color: Colors.red, fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          helper.deleteContact(contacts[index].id);
+                          setState(() {
+                            contacts.removeAt(index);
+                            Navigator.pop(context);
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
   void _showContactPage({Contact contact}) async {
-    final recContact = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ContactPage(contact: contact)),
+    final recContact = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ContactPage(contact: contact)),
     );
-    if(recContact != null){
-      if(contact != null){
+    if (recContact != null) {
+      if (contact != null) {
         await helper.updateContact(recContact);
         _getAllContacts();
       } else {
